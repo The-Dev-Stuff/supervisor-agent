@@ -1,7 +1,13 @@
 import { CompiledGraph, END, START, StateDefinition, StateGraph } from '@langchain/langgraph';
-import { HumanMessage } from '@langchain/core/messages';
-import { completion, greeting, supervisor, loadWeather, goodbye } from './nodes';
-import { NODES } from './constants/nodes';
+import {
+  GreetingNode,
+  GoodbyeNode,
+  taskNodes,
+  SupervisorNode,
+  LoadWeatherNode,
+  CompletionNode,
+} from './nodes';
+import { NODES } from '../constants/nodes';
 import { StateAnnotation } from './state';
 
 export class SupervisorGraph {
@@ -15,25 +21,29 @@ export class SupervisorGraph {
     const graph = new StateGraph<StateDefinition>(StateAnnotation as any);
 
     graph
-      .addNode(NODES.SUPERVISOR, supervisor.run, {
-        // Supervisor can go to anyone of these nodes
-        ends: [NODES.GREETING, NODES.GOODBYE, NODES.LOAD_WEATHER, NODES.COMPLETION],
+      .addNode(NODES.SUPERVISOR, SupervisorNode.run, {
+        /**
+         * Supervisor can go to anyone of the task nodes
+         * **These can be provided at runtime or filtered down by the app based on access restrictions/feature flags, etc..
+         */
+        ends: [...taskNodes, NODES.COMPLETION],
       })
-      .addNode(NODES.GREETING, greeting.run)
-      .addNode(NODES.GOODBYE, goodbye.run)
-      .addNode(NODES.LOAD_WEATHER, loadWeather.run)
-      .addNode(NODES.COMPLETION, completion.run);
-
+      // Register the nodes and their respective run methods
+      .addNode(NODES.GREETING, GreetingNode.run)
+      .addNode(NODES.GOODBYE, GoodbyeNode.run)
+      .addNode(NODES.LOAD_WEATHER, LoadWeatherNode.run)
+      .addNode(NODES.COMPLETION, CompletionNode.run);
 
     /**
-     * The only edges we need to define are the start and end.
+     * The only edges we need to strictly define are the start and end.
      * Movement between nodes is handled by the LLM's decision-making.
      */
     graph
       .addEdge(START, NODES.SUPERVISOR)
-      .addEdge(NODES.GREETING, NODES.SUPERVISOR)
-      .addEdge(NODES.GOODBYE, NODES.SUPERVISOR)
       .addEdge(NODES.COMPLETION, END);
+
+    // All task nodes go to the supervisor after they run
+    taskNodes.forEach(node => graph.addEdge(node, NODES.SUPERVISOR));
 
     this.compiledGraph = graph.compile();
   }
@@ -53,3 +63,5 @@ export class SupervisorGraph {
     });
   }
 }
+
+export const supervisorGraph = new SupervisorGraph();

@@ -1,8 +1,8 @@
-import { AIMessage } from '@langchain/core/messages';
 import { StateAnnotation } from '../state';
+import { AbstractGraphNode } from '../../models/GraphNode';
 
-export const goodbye = {
-  definition: {
+export class GoodbyeNode extends AbstractGraphNode {
+  static definition = {
     id: 'goodbye',
     name: 'Goodbye Node',
     description: 'A node that says goodbye to a user.',
@@ -12,15 +12,18 @@ export const goodbye = {
       'sync',
       'static'
     ]
-  },
-  skills: [
+  };
+
+  static skills = [
     'say_goodbye_to_users',
     'says_farewell_to_users'
-  ],
-  run: async (state: typeof StateAnnotation.State) => {
+  ];
+
+  static async run(state: typeof StateAnnotation.State) {
     console.log('Goodbye node called');
 
     return {
+      lastToolCalled: 'goodbye',
       ...state.messages,
       messages: [{
         role: 'assistant',
@@ -28,4 +31,4 @@ export const goodbye = {
       }],
     }
   }
-};
+}

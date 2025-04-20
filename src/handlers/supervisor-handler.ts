@@ -1,6 +1,5 @@
-import { SupervisorGraph } from '../graph';
+import { supervisorGraph } from '../graph';
 
 export const supervisorHandler = async (inputMessage: string) => {
-  const supervisor = new SupervisorGraph();
-  return await supervisor.run(inputMessage);
+  return await supervisorGraph.run(inputMessage);
 }
