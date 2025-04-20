@@ -12,6 +12,9 @@ export const completion = {
       'static'
     ]
   },
+  skills: [
+    'complete_flow'
+  ],
   run: async (state: typeof StateAnnotation.State) => {
     // This should build a request body to fire off an event to event bus or webhook etc..
     // It should send the event and finally just respond with a message saying it is done

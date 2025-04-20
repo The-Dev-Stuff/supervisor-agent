@@ -5,7 +5,7 @@ import { Command } from '@langchain/langgraph';
 import { ChatPromptTemplate, MessagesPlaceholder } from '@langchain/core/prompts';
 import { invokeLLM, invokeLLMWithTools } from '../../utils/llm';
 import { routingTool } from '../../tools/routing';
-import { greeting, goodbye } from './index';
+import { greeting, goodbye, completion } from './index';
 import { END } from '@langchain/langgraph';
 
 export const supervisor = {
@@ -21,13 +21,8 @@ export const supervisor = {
     ]
   },
   run: async (state: typeof StateAnnotation.State) => {
-    const availableWorkers = [greeting.definition, goodbye.definition, {
-      id: END,
-      name: 'End Node',
-      description: 'End of the workflow',
-      type: 'end'
-    }];
-    const availableSkills = [...greeting.skills, ...goodbye.skills];
+    const availableWorkers = [greeting.definition, goodbye.definition, completion.definition];
+    const availableSkills = [...greeting.skills, ...goodbye.skills, ...completion.skills];
 
     /* This needs to be a tool call to an llm where we provide
         - The system prompt
@@ -111,33 +106,10 @@ If all tasks are complete, route to the end like this:
 If you do not respond in one of these formats, you have failed.
 
 ## Available Workers:
-[
-  {
-    "id": "greeting",
-    "name": "Greeting Node",
-    "description": "A node that greets the user when a workflow begins.",
-    "type": "static",
-    "output": "text",
-    "tags": ["sync", "static"]
-  },
-  {
-    "id": "goodbye",
-    "name": "Goodbye Node",
-    "description": "A node that says goodbye to a user.",
-    "type": "static",
-    "output": "text",
-    "tags": ["sync", "static"]
-  },
-  {
-    "id": "completion",
-    "name": "Completion Node",
-    "description": "End of the workflow",
-    "type": "end"
-  }
-]
+${workers.map(worker => `- name: ${worker.name}, id: (${worker.id}), description: ${worker.description}`).join('\n')}
 
 ## Next Step Options:
-["greet_users", "say_hello_to_users", "say_goodbye_to_users", "says_farewell_to_users", "complete_flow"]
+${skills.map(skill => `- ${skill}`).join('\n')}
 `
     },
     ...messages.map((message) => ({
