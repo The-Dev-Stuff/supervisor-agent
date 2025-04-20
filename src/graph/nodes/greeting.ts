@@ -1,8 +1,8 @@
-import { AIMessage } from '@langchain/core/messages';
 import { StateAnnotation } from '../state';
+import { AbstractGraphNode } from '../../models/GraphNode';
 
-export const greeting = {
-  definition: {
+export class GreetingNode extends AbstractGraphNode {
+  static definition = {
     id: 'greeting',
     name: 'Greeting Node',
     description: 'A node that greets the user when a workflow begins.',
@@ -12,21 +12,22 @@ export const greeting = {
       'sync',
       'static'
     ]
-  },
-  skills: [
+  };
+
+  static skills = [
     'greet_users',
     'say_hello_to_users'
-  ],
-  run: async (state: typeof StateAnnotation.State) => {
-    const previousMessageToolCall = state.messages[state.messages.length - 1].tool_calls;
+  ];
 
+  static async run(state: typeof StateAnnotation.State) {
     console.log('Greeting node called');
     return {
+      lastToolCalled: 'greeting',
       ...state.messages,
       messages: [{
         role: 'assistant',
         content: 'Hello! How can I assist you today?'
       }],
-    }
+    };
   }
-};
+}

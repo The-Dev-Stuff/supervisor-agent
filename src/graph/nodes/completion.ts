@@ -1,7 +1,9 @@
-import { GraphState, StateAnnotation } from '../state';
+import { StateAnnotation } from '../state';
+import { AbstractGraphNode } from '../../models/GraphNode';
+import * as console from 'node:console';
 
-export const completion = {
-  definition: {
+export class CompletionNode extends AbstractGraphNode {
+  static definition = {
     id: 'completion',
     name: 'Completion Node',
     description: 'A node that is called at the end of the workflow.',
@@ -11,15 +13,18 @@ export const completion = {
       'sync',
       'static'
     ]
-  },
-  skills: [
+  };
+
+  static skills = [
     'complete_flow'
-  ],
-  run: async (state: typeof StateAnnotation.State) => {
+  ];
+
+  static async run(state: typeof StateAnnotation.State) {
     // This should build a request body to fire off an event to event bus or webhook etc..
     // It should send the event and finally just respond with a message saying it is done
     console.log("Running completion node with state:", state);
     return {
+      lastToolCalled: 'completion',
       ...state.messages,
       messages: [{
         role: 'assistant',
@@ -27,4 +32,4 @@ export const completion = {
       }],
     };
   }
-};
+}
