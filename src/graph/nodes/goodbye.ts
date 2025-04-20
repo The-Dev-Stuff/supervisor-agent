@@ -21,7 +21,7 @@ export class GoodbyeNode extends AbstractGraphNode {
 
   static async run(state: typeof StateAnnotation.State) {
     return {
-      lastToolCalled: 'goodbye',
+      toolCallChain: 'goodbye',
       ...state.messages,
       messages: [{
         role: 'assistant',

@@ -1,6 +1,5 @@
 import { StateAnnotation } from '../state';
 import { AbstractGraphNode } from '../../models/GraphNode';
-import * as console from 'node:console';
 
 export class CompletionNode extends AbstractGraphNode {
   static definition = {
@@ -23,7 +22,7 @@ export class CompletionNode extends AbstractGraphNode {
     // This should build a request body to fire off an event to event bus or webhook etc..
     // It should send the event and finally just respond with a message saying it is done
     return {
-      lastToolCalled: 'completion',
+      toolCallChain: 'completion',
       ...state.messages,
       messages: [{
         role: 'assistant',

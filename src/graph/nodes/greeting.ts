@@ -21,7 +21,7 @@ export class GreetingNode extends AbstractGraphNode {
 
   static async run(state: typeof StateAnnotation.State) {
     return {
-      lastToolCalled: 'greeting',
+      toolCallChain: 'greeting',
       ...state.messages,
       messages: [{
         role: 'assistant',

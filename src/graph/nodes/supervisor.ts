@@ -34,7 +34,7 @@ export class SupervisorNode extends AbstractGraphNode {
         (Eventually a list of output from other llms)
      */
     if (process.env.DEBUG === 'true') {
-      console.log('supervisor called with following messages: ', state.messages);
+      console.log('supervisor called with following state ', { state });
     }
 
     const result = await llmService.invokeWithTools(
@@ -48,7 +48,7 @@ export class SupervisorNode extends AbstractGraphNode {
 
     return new Command({
       update: {
-        lastToolCalled: 'supervisor',
+        toolCallChain: 'supervisor',
         messages: [
           {
             role: "assistant",
@@ -61,8 +61,6 @@ export class SupervisorNode extends AbstractGraphNode {
   };
 
   static buildPrompt(messages) {
-    const input = messages[messages.length - 1].content;
-
     return [
       {
         role: 'system',
