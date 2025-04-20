@@ -18,7 +18,6 @@ export class LoadWeatherNode extends AbstractGraphNode {
 
   static async run(state: typeof StateAnnotation.State) {
     // This should load the weather as a message, then send it back to the supervisor
-    console.log("Running loadWeather node with state:", state);
     const { locationList } = state;
     const weatherData = await this.fetchWeatherData(locationList);
     return {

@@ -20,8 +20,6 @@ export class GoodbyeNode extends AbstractGraphNode {
   ];
 
   static async run(state: typeof StateAnnotation.State) {
-    console.log('Goodbye node called');
-
     return {
       lastToolCalled: 'goodbye',
       ...state.messages,
