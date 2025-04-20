@@ -1,6 +1,6 @@
 import { CompiledGraph, END, START, StateDefinition, StateGraph } from '@langchain/langgraph';
 import { HumanMessage } from '@langchain/core/messages';
-import { respond, greeting, supervisor, loadWeather, goodbye } from './nodes';
+import { completion, greeting, supervisor, loadWeather, goodbye } from './nodes';
 import { NODES } from './constants/nodes';
 import { StateAnnotation } from './state';
 
@@ -17,12 +17,12 @@ export class SupervisorGraph {
     graph
       .addNode(NODES.SUPERVISOR, supervisor.run, {
         // Supervisor can go to anyone of these nodes
-        ends: [NODES.GREETING, NODES.GOODBYE, NODES.LOAD_WEATHER, NODES.RESPOND],
+        ends: [NODES.GREETING, NODES.GOODBYE, NODES.LOAD_WEATHER, NODES.COMPLETION],
       })
       .addNode(NODES.GREETING, greeting.run)
       .addNode(NODES.GOODBYE, goodbye.run)
       .addNode(NODES.LOAD_WEATHER, loadWeather.run)
-      .addNode(NODES.RESPOND, respond.run);
+      .addNode(NODES.COMPLETION, completion.run);
 
 
     /**
@@ -33,7 +33,7 @@ export class SupervisorGraph {
       .addEdge(START, NODES.SUPERVISOR)
       .addEdge(NODES.GREETING, NODES.SUPERVISOR)
       .addEdge(NODES.GOODBYE, NODES.SUPERVISOR)
-      .addEdge(NODES.RESPOND, END);
+      .addEdge(NODES.COMPLETION, END);
 
     this.compiledGraph = graph.compile();
   }

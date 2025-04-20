@@ -1,6 +1,6 @@
 export { greeting } from './greeting';
 export { goodbye } from './goodbye';
-export { respond } from './respond';
+export { completion } from './completion';
 export { supervisor } from './supervisor';
 export { loadWeather } from './load-weather';
 
