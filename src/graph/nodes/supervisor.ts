@@ -4,7 +4,7 @@ import { llmService } from '../../services/llm-service'
 import { routingTool } from '../../tools/routing';
 import { GreetingNode, GoodbyeNode, CompletionNode } from './index';
 import { AbstractGraphNode } from '../../models/GraphNode';
-import console from 'node:console';
+import colors from 'yoctocolors';
 
 export class SupervisorNode extends AbstractGraphNode {
   static definition = {
@@ -33,7 +33,9 @@ export class SupervisorNode extends AbstractGraphNode {
         - The options for next steps
         (Eventually a list of output from other llms)
      */
-    console.log('supervisor called with following messages: ', state.messages)
+    if (process.env.DEBUG === 'true') {
+      console.log('supervisor called with following messages: ', state.messages);
+    }
 
     const result = await llmService.invokeWithTools(
       SupervisorNode.buildPrompt(state.messages),
@@ -41,6 +43,8 @@ export class SupervisorNode extends AbstractGraphNode {
     );
 
     const { worker_id, next_step, reason }  =  result;
+
+    SupervisorNode.reasoning(worker_id, next_step, reason);
 
     return new Command({
       update: {
@@ -113,5 +117,18 @@ ${SupervisorNode.availableSkills.map(skill => `- ${skill}`).join('\n')}
         content: message.content || ''
       }))
     ];
+  };
+
+  static reasoning(worker_id: string, next_step: string, reason: string) {
+    console.log(colors.blue(`Calling ${colors.green(worker_id)} to ${colors.green(next_step)}, reason: ${colors.green(reason || 'No reason provided')}`));
+
+    if (process.env.LOG_REASONING === 'true') {
+      console.log({
+        event: 'Supervisor Reasoning',
+        worker_id,
+        next_step,
+        reason
+      });
+    }
   }
 }
