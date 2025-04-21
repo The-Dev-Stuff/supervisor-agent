@@ -48,12 +48,12 @@ export class SupervisorGraph {
     this.compiledGraph = graph.compile();
   }
 
-  public async run(inputMessage: string): Promise<any> {
+  async *run(inputMessage: string): AsyncGenerator<any> {
     if (!this.compiledGraph) {
       await this.initializeGraph();
     }
 
-    return await this.compiledGraph.invoke({
+    const stream = await this.compiledGraph.stream({
       messages: [
         {
           role: 'user',
@@ -61,6 +61,10 @@ export class SupervisorGraph {
         }
       ]
     });
+
+    for await (const state of stream) {
+      yield state; // Yield each state to the caller
+    }
   }
 }
 

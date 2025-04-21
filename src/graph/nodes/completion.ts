@@ -26,7 +26,7 @@ export class CompletionNode extends AbstractGraphNode {
       ...state.messages,
       messages: [{
         role: 'assistant',
-        content: 'End was reached!'
+        content: 'Agent has completed all tasks for query!'
       }],
     };
   }

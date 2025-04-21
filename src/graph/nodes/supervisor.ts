@@ -52,7 +52,7 @@ export class SupervisorNode extends AbstractGraphNode {
         messages: [
           {
             role: "assistant",
-            content: `called ${worker_id} to ${next_step} Reason: ${reason || 'No reason provided'}`
+            content: `Called ${worker_id} to ${next_step} Reason: ${reason || 'No reason provided'}`
           }
         ],
       },
