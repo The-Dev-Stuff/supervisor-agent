@@ -3,15 +3,21 @@ import { AbstractGraphNode } from '../../models/GraphNode';
 
 export class GoodbyeNode extends AbstractGraphNode {
   static definition = {
-    id: 'goodbye',
-    name: 'Goodbye Node',
-    description: 'A node that says goodbye to a user.',
-    type: 'static',
-    output: 'text',
-    tags: [
-      'sync',
-      'static'
-    ]
+    "type": "function",
+    "function": {
+      "name": "goodbye",
+      "description": "A node that says goodbye to a user.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "The reason this tool was selected based on the user's message."
+          }
+        },
+        "required": ["reason"]
+      }
+    }
   };
 
   static skills = [

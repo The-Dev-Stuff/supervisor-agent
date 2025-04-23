@@ -3,16 +3,22 @@ import { AbstractGraphNode } from '../../models/GraphNode';
 
 export class GreetingNode extends AbstractGraphNode {
   static definition = {
-    id: 'greeting',
-    name: 'Greeting Node',
-    description: 'A node that greets the user when a workflow begins.',
-    type: 'static',
-    output: 'text',
-    tags: [
-      'sync',
-      'static'
-    ]
-  };
+    "type": "function",
+  "function": {
+    "name": "greeting",
+    "description": "Greets the user and asks how they can assist.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "description": "The reason this tool was selected based on the user's message."
+        }
+      },
+      "required": ["reason"]
+    }
+  }
+};
 
   static skills = [
     'greet_users',
@@ -30,3 +36,6 @@ export class GreetingNode extends AbstractGraphNode {
     };
   }
 }
+
+
+

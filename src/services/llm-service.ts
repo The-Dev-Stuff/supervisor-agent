@@ -53,9 +53,7 @@ class LlmService {
         {
           model: this.model,
           messages,
-          tools,
-          tool_choice: 'auto',
-          stream: false,
+          tools
         },
         {
           headers: {
@@ -66,9 +64,9 @@ class LlmService {
       );
 
       if (response.data?.choices[0]?.message?.tool_calls) {
-        return JSON.parse(response.data?.choices[0]?.message?.tool_calls[0]?.function?.arguments);
+        return response.data?.choices[0]?.message?.tool_calls[0];
       } else {
-        return JSON.parse(response.data?.choices[0]?.message?.content).arguments;
+        return response.data?.choices[0]?.message?.content;
       }
     } catch (error) {
       console.error('Error invoking LLM with tools:', JSON.stringify(error, null, 2));
